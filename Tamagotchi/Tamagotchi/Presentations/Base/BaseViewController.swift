@@ -15,6 +15,7 @@ class BaseViewController: UIViewController, ViewConfiguration {
         configureViews()
         bind()
         configureNavigation()
+        serviceSetting()
     }
     
     init() {

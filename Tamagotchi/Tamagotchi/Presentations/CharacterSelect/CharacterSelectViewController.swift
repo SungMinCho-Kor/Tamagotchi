@@ -39,7 +39,7 @@ final class CharacterSelectViewController: BaseViewController {
     override func bind() {
         let output = viewModel.transform(
             input: CharacterSelectViewModel.Input(
-                
+                cellSelected: characterCollectionView.rx.modelSelected(TamagotchiCharacter.self)
             )
         )
         
@@ -64,6 +64,13 @@ final class CharacterSelectViewController: BaseViewController {
             .asDriver(onErrorJustReturn: "")
             .drive(with: self) { owner, value in
                 owner.navigationItem.title = value
+            }
+            .disposed(by: disposeBag)
+        
+        output.showSelectView
+            .asDriver(onErrorJustReturn: TamagotchiCharacter.notReady)
+            .drive(with: self) { owner, character in
+                print(character)
             }
             .disposed(by: disposeBag)
     }

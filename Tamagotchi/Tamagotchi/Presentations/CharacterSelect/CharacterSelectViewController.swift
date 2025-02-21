@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class CharacterSelectViewController: BaseViewController {
-    private let viewModel = CharacterSelectViewModel(isOnboarding: true)
+    private let viewModel = CharacterSelectViewModel()
     private lazy var characterCollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: createCollectionViewLayout()
@@ -70,7 +70,11 @@ final class CharacterSelectViewController: BaseViewController {
         output.showSelectView
             .asDriver(onErrorJustReturn: TamagotchiCharacter.notReady)
             .drive(with: self) { owner, character in
-                print(character)
+                let selectModalViewController = SelectionModalViewController(
+                    viewModel: SelectionModalViewModel(character: character)
+                )
+                selectModalViewController.delegate = owner
+                owner.present(selectModalViewController, animated: true)
             }
             .disposed(by: disposeBag)
     }
@@ -81,15 +85,24 @@ final class CharacterSelectViewController: BaseViewController {
         layout.minimumInteritemSpacing = 20
         
         let width = UIScreen.main.bounds.width
-        let cellWidth: CGFloat = (width - 20*5)/3
-        
+        let cellWidth: CGFloat = (width - 20 * 5) / 3
         layout.itemSize = CGSize(
             width: cellWidth,
             height: cellWidth + 40
         )
-        
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 20)
+        layout.sectionInset = UIEdgeInsets(
+            top: 10,
+            left: 20,
+            bottom: 20,
+            right: 20
+        )
         
         return layout
+    }
+}
+
+extension CharacterSelectViewController: SelectDelegate {
+    func select(character: TamagotchiCharacter) {
+        print(#function, character)
     }
 }

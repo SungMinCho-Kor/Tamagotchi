@@ -10,12 +10,12 @@ import UIKit
 class BaseViewController: UIViewController, ViewConfiguration {
     override func viewDidLoad() {
         super.viewDidLoad()
+        serviceSetting()
         configureHierarchy()
         configureLayout()
         configureViews()
         bind()
         configureNavigation()
-        serviceSetting()
     }
     
     init() {

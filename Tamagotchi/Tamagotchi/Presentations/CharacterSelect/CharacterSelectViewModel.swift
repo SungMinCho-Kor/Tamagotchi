@@ -20,12 +20,6 @@ final class CharacterSelectViewModel: ViewModel {
     }
     
     private let disposeBag = DisposeBag()
-    private let isOnboarding: Bool
-    
-    init(isOnboarding: Bool) {
-        self.isOnboarding = isOnboarding
-    }
-    
     private let characters: TamagotchiCharacters = TamagotchiCharacters()
     
     func transform(input: Input) -> Output {
@@ -33,7 +27,8 @@ final class CharacterSelectViewModel: ViewModel {
         
         let output = Output(
             characters: BehaviorRelay(value: characters.list),
-            navigationTitle: Observable.just(isOnboarding ? "다마고치 선택하기" : "다마고치 변경하기"), showSelectView: showSelectView
+            navigationTitle: Observable.just(UserDefaultsManager.shared.isOnboarding ? "다마고치 선택하기" : "다마고치 변경하기"),
+            showSelectView: showSelectView
         )
         
         input.cellSelected

@@ -16,9 +16,9 @@ final class UserDefaultsManager {
     
     @UserDefault(
         key: UserDefaultsKey.isOnboardingDone.rawValue,
-        defaultValue: false
+        defaultValue: true
     )
-    var isOnboardingDone: Bool
+    var isOnboarding: Bool
     
     func resetUserData() {
         UserDefaultsKey.allCases.forEach { key in

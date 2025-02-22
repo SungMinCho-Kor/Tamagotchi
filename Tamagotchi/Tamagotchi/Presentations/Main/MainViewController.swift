@@ -74,11 +74,19 @@ final class MainViewController: BaseViewController {
         )
         
         output.fetchCharacter
+            .asDriver()
             .drive(with: self) { owner, information in
                 owner.characterView.configure(
                     imageName: information.imageName,
                     name: information.character.name
                 )
+            }
+            .disposed(by: disposeBag)
+        
+        output.navigationTitle
+            .asDriver()
+            .drive(with: self) { owner, title in
+                owner.navigationItem.title = title
             }
             .disposed(by: disposeBag)
     }

@@ -14,11 +14,9 @@ final class MainViewModel: ViewModel {
     }
     
     struct Output {
-        let fetchCharacter: Driver<CharacterInformation>
+        let fetchCharacter: BehaviorRelay<CharacterInformation>
         let navigationTitle: BehaviorRelay<String>
     }
-    
-    private var character: CharacterInformation = UserDefaultsManager.shared.character
     
     init() {
         print(#function, self)
@@ -29,16 +27,11 @@ final class MainViewModel: ViewModel {
     }
     
     func transform(input: Input) -> Output {
-        let navigationTitle = BehaviorRelay(value: UserDefaultsManager.shared.masterName)
+        let navigationTitle = BehaviorRelay(value: "\(UserDefaultsManager.shared.masterName)님의 다마고치")
+        let character = BehaviorRelay(value: UserDefaultsManager.shared.character)
         
         let output = Output(
-            fetchCharacter: Observable.just(character).asDriver(
-                onErrorJustReturn: CharacterInformation(
-                    character: .notReady,
-                    water: 0,
-                    food: 0
-                )
-            ),
+            fetchCharacter: character,
             navigationTitle: navigationTitle
         )
         

@@ -18,7 +18,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     ) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = UINavigationController(rootViewController: UserDefaultsManager.shared.isOnboarding ? CharacterSelectViewController() : MainViewController(viewModel: MainViewModel()))
+        window?.rootViewController = CommonNavigationController(rootViewController: UserDefaultsManager.shared.isOnboarding ? CharacterSelectViewController() : MainViewController())
         window?.makeKeyAndVisible()
     }
 }

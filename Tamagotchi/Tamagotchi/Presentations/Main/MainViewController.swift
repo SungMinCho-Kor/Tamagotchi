@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class MainViewController: BaseViewController {
-    private let viewModel: MainViewModel
+    private let viewModel = MainViewModel()
     private let disposeBag = DisposeBag()
     
     private let bubbleView = BubbleView()
@@ -19,16 +19,6 @@ final class MainViewController: BaseViewController {
     private let characterInfoLabel = UILabel()
     private let waterFeedingView = FeedingView(feedType: .water)
     private let foodFeedingView = FeedingView(feedType: .food)
-    
-    init(viewModel: MainViewModel) {
-        self.viewModel = viewModel
-        super.init()
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-    }
     
     override func configureHierarchy() {
         [
@@ -84,13 +74,10 @@ final class MainViewController: BaseViewController {
         )
         
         output.fetchCharacter
-            .asDriver(onErrorJustReturn: .notReady)
-            .drive(with: self) {
-                owner,
-                character in
+            .drive(with: self) { owner, information in
                 owner.characterView.configure(
-                    imageName: character.imageName,
-                    name: character.name
+                    imageName: information.imageName,
+                    name: information.character.name
                 )
             }
             .disposed(by: disposeBag)

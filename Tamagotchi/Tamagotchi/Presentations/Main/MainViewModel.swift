@@ -14,13 +14,13 @@ final class MainViewModel: ViewModel {
     }
     
     struct Output {
-        let fetchCharacter: Observable<TamagotchiCharacter>
+        let fetchCharacter: Driver<CharacterInformation>
+        let navigationTitle: BehaviorRelay<String>
     }
     
-    private let character: TamagotchiCharacter
+    private var character: CharacterInformation = UserDefaultsManager.shared.character
     
-    init(character: TamagotchiCharacter) {
-        self.character = character
+    init() {
         print(#function, self)
     }
     
@@ -29,8 +29,17 @@ final class MainViewModel: ViewModel {
     }
     
     func transform(input: Input) -> Output {
+        let navigationTitle = BehaviorRelay(value: UserDefaultsManager.shared.masterName)
+        
         let output = Output(
-            fetchCharacter: Observable.just(character)
+            fetchCharacter: Observable.just(character).asDriver(
+                onErrorJustReturn: CharacterInformation(
+                    character: .notReady,
+                    water: 0,
+                    food: 0
+                )
+            ),
+            navigationTitle: navigationTitle
         )
         
         return output

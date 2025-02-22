@@ -103,6 +103,13 @@ final class CharacterSelectViewController: BaseViewController {
 
 extension CharacterSelectViewController: SelectDelegate {
     func select(character: TamagotchiCharacter) {
-        print(#function, character)
+        changeRootViewController(
+            UINavigationController(
+                rootViewController: MainViewController(
+                    viewModel: MainViewModel(character: character)
+                )
+            ),
+            animated: true
+        )
     }
 }

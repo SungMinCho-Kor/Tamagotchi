@@ -35,7 +35,7 @@ final class BubbleView: BaseView {
         contentLabel.textAlignment = .center
         contentLabel.font = .systemFont(ofSize: 14)
         
-        bubbleImageView.contentMode = .scaleAspectFill
+        bubbleImageView.contentMode = .scaleToFill
     }
 }
 

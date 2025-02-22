@@ -40,7 +40,11 @@ final class CharacterSelectViewModel: ViewModel {
         )
         
         input.cellSelected
-            .bind(to: showSelectView)
+            .bind(with: self) { owner, character in
+                if character != TamagotchiCharacter.notReady {
+                    showSelectView.accept(character)
+                }
+            }
             .disposed(by: disposeBag)
         
         return output

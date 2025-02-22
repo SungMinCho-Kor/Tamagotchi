@@ -15,7 +15,7 @@ final class CharacterSelectViewModel: ViewModel {
     
     struct Output {
         let characters: BehaviorRelay<[TamagotchiCharacter]>
-        let navigationTitle: Observable<String>
+        let navigationTitle: BehaviorRelay<String>
         let showSelectView: PublishRelay<TamagotchiCharacter>
     }
     
@@ -32,10 +32,11 @@ final class CharacterSelectViewModel: ViewModel {
     
     func transform(input: Input) -> Output {
         let showSelectView = PublishRelay<TamagotchiCharacter>()
+        let navigationTitle = BehaviorRelay(value: UserDefaultsManager.shared.isOnboarding ? "다마고치 선택하기" : "다마고치 변경하기")
         
         let output = Output(
             characters: BehaviorRelay(value: characters.list),
-            navigationTitle: Observable.just(UserDefaultsManager.shared.isOnboarding ? "다마고치 선택하기" : "다마고치 변경하기"),
+            navigationTitle: navigationTitle,
             showSelectView: showSelectView
         )
         

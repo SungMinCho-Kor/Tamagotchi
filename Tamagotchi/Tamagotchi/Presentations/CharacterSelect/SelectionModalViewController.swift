@@ -122,7 +122,7 @@ final class SelectionModalViewController: BaseViewController {
             .asDriver(onErrorJustReturn: .notReady)
             .drive(with: self) { owner, character in
                 owner.characterView.configure(
-                    imageName: character.imageName,
+                    imageName: character.respresentativeImageName,
                     name: character.name
                 )
                 owner.descriptionLabel.text = character.description
@@ -130,14 +130,12 @@ final class SelectionModalViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         output.cancel
-            .asDriver(onErrorJustReturn: ())
             .drive(with: self) { owner, _ in
                 owner.dismiss(animated: true)
             }
             .disposed(by: disposeBag)
         
         output.selectCharacter
-            .asDriver(onErrorJustReturn: .notReady)
             .drive(with: self) { owner, character in
                 owner.delegate?.select(character: character)
                 owner.dismiss(animated: true)

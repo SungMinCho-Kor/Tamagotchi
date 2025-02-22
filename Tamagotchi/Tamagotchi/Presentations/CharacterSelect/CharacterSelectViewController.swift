@@ -44,7 +44,7 @@ final class CharacterSelectViewController: BaseViewController {
         )
         
         output.characters
-            .asDriver(onErrorJustReturn: [])
+            .asDriver()
             .drive(
                 characterCollectionView.rx.items(
                     cellIdentifier: CharacterSelectCollectionViewCell.identifier,
@@ -53,7 +53,7 @@ final class CharacterSelectViewController: BaseViewController {
             ) { row, element, cell in
                 cell.configure(
                     content: CharacterSelectCollectionViewCell.Content(
-                        imageName: element.imageName,
+                        imageName: element.respresentativeImageName,
                         name: element.name
                     )
                 )
@@ -61,7 +61,7 @@ final class CharacterSelectViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         output.navigationTitle
-            .asDriver(onErrorJustReturn: "")
+            .asDriver()
             .drive(with: self) { owner, value in
                 owner.navigationItem.title = value
             }
@@ -104,11 +104,7 @@ final class CharacterSelectViewController: BaseViewController {
 extension CharacterSelectViewController: SelectDelegate {
     func select(character: TamagotchiCharacter) {
         changeRootViewController(
-            UINavigationController(
-                rootViewController: MainViewController(
-                    viewModel: MainViewModel(character: character)
-                )
-            ),
+            UINavigationController(rootViewController: MainViewController()),
             animated: true
         )
     }

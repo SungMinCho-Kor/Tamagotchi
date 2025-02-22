@@ -15,12 +15,13 @@ final class SelectionModalViewModel: ViewModel {
     }
     
     struct Output {
-        let selectButtonTitle: Observable<String>
-        let character: Observable<TamagotchiCharacter>
-        let selectCharacter: Observable<TamagotchiCharacter>
-        let cancel: Observable<Void>
+        let selectButtonTitle: BehaviorRelay<String>
+        let character: BehaviorRelay<TamagotchiCharacter>
+        let selectCharacter: Driver<TamagotchiCharacter>
+        let cancel: Driver<Void>
     }
     
+    private let disposeBag = DisposeBag()
     private let character: TamagotchiCharacter
     
     init(character: TamagotchiCharacter) {
@@ -28,24 +29,32 @@ final class SelectionModalViewModel: ViewModel {
         print(#function, self)
     }
     
+    init() {
+        self.character = UserDefaultsManager.shared.character.character
+    }
+    
     deinit {
         print(#function, self)
     }
     
     func transform(input: Input) -> Output {
+        let selectButtonTitle = BehaviorRelay(value: UserDefaultsManager.shared.isOnboarding ? "시작하기" : "변경하기")
+        let characterRelay = BehaviorRelay(value: character)
         let selectCharacter = input.select
-            .withUnretained(self)
-            .map { owner, _ in
-                return owner.character
-            }
+            .map { characterRelay.value }
+        
+        selectCharacter.bind { character in
+            UserDefaultsManager.shared.character.character = character
+            UserDefaultsManager.shared.isOnboarding = false
+        }
+        .disposed(by: disposeBag)
         
         let output = Output(
-            selectButtonTitle: Observable.just(UserDefaultsManager.shared.isOnboarding ? "시작하기" : "변경하기"),
-            character: Observable.just(character),
-            selectCharacter: selectCharacter,
-            cancel: input.cancel.asObservable()
+            selectButtonTitle: selectButtonTitle,
+            character: characterRelay,
+            selectCharacter: selectCharacter.asDriver(onErrorJustReturn: .notReady),
+            cancel: input.cancel.asDriver()
         )
-        
         
         return output
     }

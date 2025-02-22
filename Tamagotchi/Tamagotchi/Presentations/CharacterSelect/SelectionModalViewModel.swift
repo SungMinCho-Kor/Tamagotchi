@@ -25,6 +25,11 @@ final class SelectionModalViewModel: ViewModel {
     
     init(character: TamagotchiCharacter) {
         self.character = character
+        print(#function, self)
+    }
+    
+    deinit {
+        print(#function, self)
     }
     
     func transform(input: Input) -> Output {

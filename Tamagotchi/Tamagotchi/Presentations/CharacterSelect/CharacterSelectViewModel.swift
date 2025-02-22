@@ -19,6 +19,14 @@ final class CharacterSelectViewModel: ViewModel {
         let showSelectView: PublishRelay<TamagotchiCharacter>
     }
     
+    init() {
+        print(#function, self)
+    }
+    
+    deinit {
+        print(#function, self)
+    }
+    
     private let disposeBag = DisposeBag()
     private let characters: TamagotchiCharacters = TamagotchiCharacters()
     

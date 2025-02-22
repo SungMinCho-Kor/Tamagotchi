@@ -20,6 +20,11 @@ class BaseViewController: UIViewController, ViewConfiguration {
     
     init() {
         super.init(nibName: nil, bundle: nil)
+        print(#function, self)
+    }
+    
+    deinit {
+        print(#function, self)
     }
     
     @available(*, unavailable)

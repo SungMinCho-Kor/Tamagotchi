@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 protocol SelectDelegate: AnyObject {
-    func select(character: TamagotchiCharacter)
+    func popViewController()
 }
 
 final class SelectionModalViewController: BaseViewController {
@@ -135,10 +135,20 @@ final class SelectionModalViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        output.selectCharacter
-            .drive(with: self) { owner, character in
-                owner.delegate?.select(character: character)
-                owner.dismiss(animated: true)
+        output.selectCharacterOnboarding
+            .drive(with: self) { owner, _ in
+                owner.changeRootViewController(
+                    CommonNavigationController(rootViewController: MainViewController()),
+                    animated: true
+                )
+            }
+            .disposed(by: disposeBag)
+        
+        output.selectCharacterOnSetting
+            .drive(with: self) { owner, _ in
+                owner.dismiss(animated: true) {
+                    owner.delegate?.popViewController()
+                }
             }
             .disposed(by: disposeBag)
     }

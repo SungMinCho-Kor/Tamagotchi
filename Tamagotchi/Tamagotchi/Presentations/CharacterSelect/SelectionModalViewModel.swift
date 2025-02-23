@@ -17,7 +17,8 @@ final class SelectionModalViewModel: ViewModel {
     struct Output {
         let selectButtonTitle: BehaviorRelay<String>
         let character: BehaviorRelay<TamagotchiCharacter>
-        let selectCharacter: Driver<TamagotchiCharacter>
+        let selectCharacterOnboarding: Driver<Void>
+        let selectCharacterOnSetting: Driver<Void>
         let cancel: Driver<Void>
     }
     
@@ -43,16 +44,26 @@ final class SelectionModalViewModel: ViewModel {
         let selectCharacter = input.select
             .map { characterRelay.value }
         
-        selectCharacter.bind { character in
-            UserDefaultsManager.shared.character.character = character
-            UserDefaultsManager.shared.isOnboarding = false
-        }
-        .disposed(by: disposeBag)
+        let selectOnboarding = PublishRelay<Void>()
+        let selectOnSetting = PublishRelay<Void>()
+        
+        selectCharacter
+            .bind(with: self) { owner, _ in
+                UserDefaultsManager.shared.character.character = owner.character
+                if UserDefaultsManager.shared.isOnboarding {
+                    UserDefaultsManager.shared.isOnboarding = false
+                    selectOnboarding.accept(())
+                } else {
+                    selectOnSetting.accept(())
+                }
+            }
+            .disposed(by: disposeBag)
         
         let output = Output(
             selectButtonTitle: selectButtonTitle,
             character: characterRelay,
-            selectCharacter: selectCharacter.asDriver(onErrorJustReturn: .notReady),
+            selectCharacterOnboarding: selectOnboarding.asDriver(onErrorJustReturn: ()),
+            selectCharacterOnSetting: selectOnSetting.asDriver(onErrorJustReturn: ()),
             cancel: input.cancel.asDriver()
         )
         

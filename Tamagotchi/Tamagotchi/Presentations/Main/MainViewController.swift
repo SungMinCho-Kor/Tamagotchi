@@ -123,7 +123,13 @@ final class MainViewController: BaseViewController {
                 owner.showAlert(message: message)
             }
             .disposed(by: disposeBag)
-}
+        
+        output.showMessage
+            .drive(with: self) { owner, message in
+                owner.bubbleView.contentLabel.text = message
+            }
+            .disposed(by: disposeBag)
+    }
     
     private func showAlert(message: String) {
         let alertController = UIAlertController(

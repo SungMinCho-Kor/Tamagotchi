@@ -13,6 +13,7 @@ final class SettingViewModel: ViewModel {
     struct Input {
         let cellSelected: ControlEvent<IndexPath>
         let refresh: PublishRelay<Void>
+        let reset: PublishRelay<Void>
     }
     
     struct Output {
@@ -20,6 +21,7 @@ final class SettingViewModel: ViewModel {
         let pushChangeMasterNameViewController: PublishRelay<Void>
         let pushChangeTamagochiViewController: PublishRelay<Void>
         let presentResetAlert: PublishRelay<Void>
+        let changeRootViewController: PublishRelay<Void>
     }
     
     private let disposeBag = DisposeBag()
@@ -36,6 +38,7 @@ final class SettingViewModel: ViewModel {
         let pushChangeMasterNameViewController = PublishRelay<Void>()
         let pushChangeTamagochiViewController = PublishRelay<Void>()
         let presentResetAlert = PublishRelay<Void>()
+        let changeRootViewController = PublishRelay<Void>()
         
         var cellContents: [SettingCellContent] = [
             SettingCellContent(
@@ -81,11 +84,19 @@ final class SettingViewModel: ViewModel {
             }
             .disposed(by: disposeBag)
         
+        input.reset
+            .bind { _ in
+                UserDefaultsManager.shared.resetUserData()
+                changeRootViewController.accept(())
+            }
+            .disposed(by: disposeBag)
+        
         let output = Output(
             tableViewItems: tableViewItems,
             pushChangeMasterNameViewController: pushChangeMasterNameViewController,
             pushChangeTamagochiViewController: pushChangeTamagochiViewController,
-            presentResetAlert: presentResetAlert
+            presentResetAlert: presentResetAlert,
+            changeRootViewController: changeRootViewController
         )
         
         return output

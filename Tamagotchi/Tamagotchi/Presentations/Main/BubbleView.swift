@@ -34,6 +34,7 @@ final class BubbleView: BaseView {
         contentLabel.textColor = .servicePrimary
         contentLabel.textAlignment = .center
         contentLabel.font = .systemFont(ofSize: 14)
+        contentLabel.numberOfLines = 0
         
         bubbleImageView.contentMode = .scaleToFill
     }

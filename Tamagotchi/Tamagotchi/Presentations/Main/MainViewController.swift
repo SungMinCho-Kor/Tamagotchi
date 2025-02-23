@@ -59,17 +59,29 @@ final class MainViewController: BaseViewController {
     }
     
     override func configureViews() {
-        
-    }
-    
-    override func configureNavigation() {
-        super.configureNavigation()
+        characterInfoLabel.font = .systemFont(ofSize: 15)
+        characterInfoLabel.textColor = .servicePrimary
     }
     
     override func bind() {
+        let waterTapped = waterFeedingView.feedButton.rx.tap
+        let waterText = BehaviorRelay(value: "")
+        
+        waterText
+            .asDriver()
+            .drive(with: self) { owner, text in
+                owner.waterFeedingView.amountTextField.text = text
+            }
+            .disposed(by: disposeBag)
+        
+        waterFeedingView.amountTextField.rx.text.orEmpty
+            .bind(to: waterText)
+            .disposed(by: disposeBag)
+        
         let output = viewModel.transform(
             input: MainViewModel.Input(
-                
+                waterText: waterText,
+                waterTapped: waterTapped
             )
         )
         
@@ -80,6 +92,7 @@ final class MainViewController: BaseViewController {
                     imageName: information.imageName,
                     name: information.character.name
                 )
+                owner.characterInfoLabel.text = "LV\(information.level) · 밥알 \(information.food)개 · 물방울 \(information.water)개"
             }
             .disposed(by: disposeBag)
         
@@ -89,5 +102,29 @@ final class MainViewController: BaseViewController {
                 owner.navigationItem.title = title
             }
             .disposed(by: disposeBag)
+        
+        output.showAlert
+            .drive(with: self) { owner, message in
+                owner.showAlert(message: message)
+            }
+            .disposed(by: disposeBag)
+}
+    
+    private func showAlert(message: String) {
+        let alertController = UIAlertController(
+            title: nil,
+            message: message,
+            preferredStyle: .alert
+        )
+        alertController.addAction(
+            UIAlertAction(
+                title: "확인",
+                style: .default
+            )
+        )
+        present(
+            alertController,
+            animated: true
+        )
     }
 }

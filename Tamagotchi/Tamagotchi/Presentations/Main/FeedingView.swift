@@ -9,39 +9,6 @@ import UIKit
 import SnapKit
 
 final class FeedingView: BaseView {
-    
-    enum FeedType {
-        case food
-        case water
-        
-        var placeholder: String {
-            switch self {
-            case .food:
-                return "밥주세용"
-            case .water:
-                return "물주세용"
-            }
-        }
-        
-        var systemImageName: String {
-            switch self {
-            case .food:
-                return "leaf.circle"
-            case .water:
-                return "drop.circle"
-            }
-        }
-        
-        var buttonTitle: String {
-            switch self {
-            case .food:
-                return "밥먹기"
-            case .water:
-                return "물먹기"
-            }
-        }
-    }
-    
     private let textFieldLineView = UIView()
     
     let amountTextField = UITextField()
@@ -94,6 +61,7 @@ final class FeedingView: BaseView {
         feedButton.configuration = UIButton.Configuration.bordered()
         feedButton.configuration?.baseBackgroundColor = .serviceBackground
         feedButton.configuration?.baseForegroundColor = .servicePrimary
+        feedButton.configuration?.imagePadding = 4
         
         feedButton.layer.cornerRadius = 10
         feedButton.layer.borderWidth = 1
@@ -105,7 +73,6 @@ final class FeedingView: BaseView {
         amountTextField.placeholder = feedType.placeholder
         
         feedButton.configuration?.image = UIImage(systemName: feedType.systemImageName)
-//        feedButton.configuration?.imagePlacement = .leading
         feedButton.configuration?.title = feedType.buttonTitle
     }
 }

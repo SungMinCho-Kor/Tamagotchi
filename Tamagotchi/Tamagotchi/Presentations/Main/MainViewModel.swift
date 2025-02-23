@@ -54,7 +54,7 @@ final class MainViewModel: ViewModel {
             }
             .bind(with: self) { owner, amount in
                 let prevLevel = UserDefaultsManager.shared.character.level
-                if amount >= 50 || amount < 0 {
+                if amount >= 50 || amount <= 0 {
                     showAlert.accept(FeedType.water.amountWarning)
                 } else {
                     UserDefaultsManager.shared.character.water += amount
@@ -88,7 +88,7 @@ final class MainViewModel: ViewModel {
             }
             .bind(with: self) { owner, amount in
                 let prevLevel = UserDefaultsManager.shared.character.level
-                if amount >= 100 || amount < 0 {
+                if amount >= 100 || amount <= 0 {
                     showAlert.accept(FeedType.food.amountWarning)
                 } else {
                     UserDefaultsManager.shared.character.food += amount

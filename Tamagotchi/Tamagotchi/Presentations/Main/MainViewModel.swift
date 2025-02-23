@@ -14,6 +14,8 @@ final class MainViewModel: ViewModel {
     struct Input {
         let waterText: BehaviorRelay<String>
         let waterTapped: ControlEvent<Void>
+        let foodText: BehaviorRelay<String>
+        let foodTapped: ControlEvent<Void>
     }
     
     struct Output {
@@ -55,6 +57,29 @@ final class MainViewModel: ViewModel {
                     character.accept(UserDefaultsManager.shared.character)
                 }
                 input.waterText.accept("")
+            }
+            .disposed(by: disposeBag)
+        
+        input.foodTapped
+            .withLatestFrom(input.foodText)
+            .map { amount in
+                if amount.isEmpty {
+                    return 1
+                } else if let amount = Int(amount) {
+                    return amount
+                } else {
+                    showAlert.accept(FeedType.food.amountWarning)
+                    return 0
+                }
+            }
+            .bind(with: self) { owner, amount in
+                if amount >= 100 || amount < 0 {
+                    showAlert.accept(FeedType.food.amountWarning)
+                } else {
+                    UserDefaultsManager.shared.character.food += amount
+                    character.accept(UserDefaultsManager.shared.character)
+                }
+                input.foodText.accept("")
             }
             .disposed(by: disposeBag)
             

@@ -66,6 +66,8 @@ final class MainViewController: BaseViewController {
     override func bind() {
         let waterTapped = waterFeedingView.feedButton.rx.tap
         let waterText = BehaviorRelay(value: "")
+        let foodTapped = foodFeedingView.feedButton.rx.tap
+        let foodText = BehaviorRelay(value: "")
         
         waterText
             .asDriver()
@@ -78,10 +80,23 @@ final class MainViewController: BaseViewController {
             .bind(to: waterText)
             .disposed(by: disposeBag)
         
+        foodText
+            .asDriver()
+            .drive(with: self) { owner, text in
+                owner.foodFeedingView.amountTextField.text = text
+            }
+            .disposed(by: disposeBag)
+        
+        foodFeedingView.amountTextField.rx.text.orEmpty
+            .bind(to: foodText)
+            .disposed(by: disposeBag)
+        
         let output = viewModel.transform(
             input: MainViewModel.Input(
                 waterText: waterText,
-                waterTapped: waterTapped
+                waterTapped: waterTapped,
+                foodText: foodText,
+                foodTapped: foodTapped
             )
         )
         

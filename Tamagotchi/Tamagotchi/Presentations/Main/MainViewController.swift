@@ -20,6 +20,13 @@ final class MainViewController: BaseViewController {
     private let waterFeedingView = FeedingView(feedType: .water)
     private let foodFeedingView = FeedingView(feedType: .food)
     
+    private let refreshCharacter = PublishRelay<Void>()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refreshCharacter.accept(())
+    }
+    
     override func configureHierarchy() {
         [
             bubbleView,
@@ -63,6 +70,24 @@ final class MainViewController: BaseViewController {
         characterInfoLabel.textColor = .servicePrimary
     }
     
+    override func configureNavigation() {
+        let settingBarButton = UIBarButtonItem(
+            image: UIImage(systemName: "person.circle"),
+            style: .plain,
+            target: nil,
+            action: nil
+        )
+        navigationItem.rightBarButtonItem = settingBarButton
+        
+        let backButton = UIBarButtonItem(
+            title: "",
+            style: .plain,
+            target: nil,
+            action: nil
+        )
+        navigationItem.backBarButtonItem = backButton
+    }
+    
     override func bind() {
         let waterTapped = waterFeedingView.feedButton.rx.tap
         let waterText = BehaviorRelay(value: "")
@@ -96,12 +121,19 @@ final class MainViewController: BaseViewController {
                 waterText: waterText,
                 waterTapped: waterTapped,
                 foodText: foodText,
-                foodTapped: foodTapped
+                foodTapped: foodTapped,
+                refreshCharacter: refreshCharacter
             )
         )
         
         output.fetchCharacter
-            .asDriver()
+            .asDriver(
+                onErrorJustReturn: CharacterInformation(
+                    character: .notReady,
+                    water: 0,
+                    food: 0
+                )
+            )
             .drive(with: self) { owner, information in
                 owner.characterView.configure(
                     imageName: information.imageName,
@@ -127,6 +159,17 @@ final class MainViewController: BaseViewController {
         output.showMessage
             .drive(with: self) { owner, message in
                 owner.bubbleView.contentLabel.text = message
+            }
+            .disposed(by: disposeBag)
+        
+        navigationItem.rightBarButtonItem?.rx.tap
+            .asDriver()
+            .drive(with: self) { owner, _ in
+                let settingViewController = SettingViewController()
+                owner.navigationController?.pushViewController(
+                    settingViewController,
+                    animated: true
+                )
             }
             .disposed(by: disposeBag)
     }

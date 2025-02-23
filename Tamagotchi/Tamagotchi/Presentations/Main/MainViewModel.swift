@@ -16,10 +16,11 @@ final class MainViewModel: ViewModel {
         let waterTapped: ControlEvent<Void>
         let foodText: BehaviorRelay<String>
         let foodTapped: ControlEvent<Void>
+        let refreshCharacter: PublishRelay<Void>
     }
     
     struct Output {
-        let fetchCharacter: BehaviorRelay<CharacterInformation>
+        let fetchCharacter: PublishRelay<CharacterInformation>
         let navigationTitle: BehaviorRelay<String>
         let showAlert: Driver<String>
         let showMessage: Driver<String>
@@ -35,9 +36,9 @@ final class MainViewModel: ViewModel {
     
     func transform(input: Input) -> Output {
         let navigationTitle = BehaviorRelay(value: "\(UserDefaultsManager.shared.masterName)님의 다마고치")
-        let character = BehaviorRelay(value: UserDefaultsManager.shared.character)
         let showAlert = PublishRelay<String>()
         let showMessage = BehaviorRelay(value: "\(UserDefaultsManager.shared.masterName)님 반가워요~")
+        let character = PublishRelay<CharacterInformation>()
         
         // TODO: water, food 매개변수로 통합 (중복 코드 제거)
         input.waterTapped
@@ -108,7 +109,14 @@ final class MainViewModel: ViewModel {
                 }
             }
             .disposed(by: disposeBag)
-            
+        
+        input.refreshCharacter
+            .bind {
+                character.accept(UserDefaultsManager.shared.character)
+                showMessage.accept("\(UserDefaultsManager.shared.masterName)님 반가워요~")
+            }
+            .disposed(by: disposeBag)
+        
         let output = Output(
             fetchCharacter: character,
             navigationTitle: navigationTitle,
@@ -119,3 +127,9 @@ final class MainViewModel: ViewModel {
         return output
     }
 }
+
+//extension MainViewModel: SettingDelegate {
+//    func backButtonTapped() {
+//        character.accept(UserDefaultsManager.shared.character)
+//    }
+//}

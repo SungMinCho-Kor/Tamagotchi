@@ -14,8 +14,8 @@ class BaseViewController: UIViewController, ViewConfiguration {
         configureHierarchy()
         configureLayout()
         configureViews()
-        bind()
         configureNavigation()
+        bind()
     }
     
     init() {

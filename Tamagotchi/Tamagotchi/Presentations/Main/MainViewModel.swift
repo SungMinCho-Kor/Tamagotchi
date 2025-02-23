@@ -37,6 +37,7 @@ final class MainViewModel: ViewModel {
         let character = BehaviorRelay(value: UserDefaultsManager.shared.character)
         let showAlert = PublishRelay<String>()
         
+        // TODO: water, food 매개변수로 통합 (중복 코드 제거)
         input.waterTapped
             .withLatestFrom(input.waterText)
             .map { amount in
@@ -45,8 +46,7 @@ final class MainViewModel: ViewModel {
                 } else if let amount = Int(amount) {
                     return amount
                 } else {
-                    showAlert.accept(FeedType.water.amountWarning)
-                    return 0
+                    return -1
                 }
             }
             .bind(with: self) { owner, amount in
@@ -68,8 +68,7 @@ final class MainViewModel: ViewModel {
                 } else if let amount = Int(amount) {
                     return amount
                 } else {
-                    showAlert.accept(FeedType.food.amountWarning)
-                    return 0
+                    return -1
                 }
             }
             .bind(with: self) { owner, amount in

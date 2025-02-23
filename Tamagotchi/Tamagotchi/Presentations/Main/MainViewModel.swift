@@ -114,6 +114,7 @@ final class MainViewModel: ViewModel {
             .bind {
                 character.accept(UserDefaultsManager.shared.character)
                 showMessage.accept("\(UserDefaultsManager.shared.masterName)님 반가워요~")
+                navigationTitle.accept("\(UserDefaultsManager.shared.masterName)님의 다마고치")
             }
             .disposed(by: disposeBag)
         
@@ -127,9 +128,3 @@ final class MainViewModel: ViewModel {
         return output
     }
 }
-
-//extension MainViewModel: SettingDelegate {
-//    func backButtonTapped() {
-//        character.accept(UserDefaultsManager.shared.character)
-//    }
-//}

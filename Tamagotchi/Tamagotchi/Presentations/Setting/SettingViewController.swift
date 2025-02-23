@@ -13,12 +13,14 @@ import RxCocoa
 final class SettingViewController: BaseViewController {
     private let disposeBag = DisposeBag()
     private let viewModel = SettingViewModel()
+    private let refresh = PublishRelay<Void>()
     
     private let tableView = UITableView()
     
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.reloadData()
+        refresh.accept(())
     }
     
     override func configureHierarchy() {
@@ -47,12 +49,13 @@ final class SettingViewController: BaseViewController {
     override func bind() {
         let output = viewModel.transform(
             input: SettingViewModel.Input(
-                cellSelected: tableView.rx.itemSelected
+                cellSelected: tableView.rx.itemSelected,
+                refresh: refresh
             )
         )
         
         output.tableViewItems
-            .asDriver()
+            .asDriver(onErrorJustReturn: [])
             .drive(
                 tableView.rx.items(
                     cellIdentifier: SettingTableViewCell.identifier,
@@ -66,7 +69,10 @@ final class SettingViewController: BaseViewController {
         output.pushChangeMasterNameViewController
             .asDriver(onErrorJustReturn: ())
             .drive(with: self) { owner, _ in
-                
+                owner.navigationController?.pushViewController(
+                    ChangeMasterNameViewController(),
+                    animated: true
+                )
             }
             .disposed(by: disposeBag)
         

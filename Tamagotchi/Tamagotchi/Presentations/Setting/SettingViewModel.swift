@@ -10,17 +10,26 @@ import RxSwift
 import RxCocoa
 
 final class SettingViewModel: ViewModel {
-    private let disposeBag = DisposeBag()
-    
     struct Input {
         let cellSelected: ControlEvent<IndexPath>
+        let refresh: PublishRelay<Void>
     }
     
     struct Output {
-        let tableViewItems: BehaviorRelay<[SettingCellContent]>
+        let tableViewItems: PublishRelay<[SettingCellContent]>
         let pushChangeMasterNameViewController: PublishRelay<Void>
         let pushChangeTamagochiViewController: PublishRelay<Void>
         let presentResetAlert: PublishRelay<Void>
+    }
+    
+    private let disposeBag = DisposeBag()
+    
+    init() {
+        print(#function, self)
+    }
+    
+    deinit {
+        print(#function, self)
     }
     
     func transform(input: Input) -> Output {
@@ -28,7 +37,7 @@ final class SettingViewModel: ViewModel {
         let pushChangeTamagochiViewController = PublishRelay<Void>()
         let presentResetAlert = PublishRelay<Void>()
         
-        let cellContents: [SettingCellContent] = [
+        var cellContents: [SettingCellContent] = [
             SettingCellContent(
                 iconImageName: "pencil",
                 title: "내 이름 설정하기",
@@ -44,7 +53,7 @@ final class SettingViewModel: ViewModel {
             )
         ]
         
-        let tableViewItems = BehaviorRelay(value: cellContents)
+        let tableViewItems = PublishRelay<[SettingCellContent]>()
         
         input.cellSelected
             .bind { indexPath in
@@ -58,6 +67,17 @@ final class SettingViewModel: ViewModel {
                 default:
                     print("Cell Selection Error")
                 }
+            }
+            .disposed(by: disposeBag)
+        
+        input.refresh
+            .bind { _ in
+                cellContents[0] = SettingCellContent(
+                    iconImageName: "pencil",
+                    title: "내 이름 설정하기",
+                    accessoryText: UserDefaultsManager.shared.masterName
+                )
+                tableViewItems.accept(cellContents)
             }
             .disposed(by: disposeBag)
         

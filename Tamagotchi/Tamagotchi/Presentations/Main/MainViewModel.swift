@@ -9,8 +9,6 @@ import RxSwift
 import RxCocoa
 
 final class MainViewModel: ViewModel {
-    private let disposeBag = DisposeBag()
-    
     struct Input {
         let waterText: BehaviorRelay<String>
         let waterTapped: ControlEvent<Void>
@@ -25,6 +23,8 @@ final class MainViewModel: ViewModel {
         let showAlert: Driver<String>
         let showMessage: Driver<String>
     }
+    
+    private let disposeBag = DisposeBag()
     
     init() {
         print(#function, self)

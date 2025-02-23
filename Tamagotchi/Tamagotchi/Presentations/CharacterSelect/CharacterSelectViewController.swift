@@ -12,11 +12,12 @@ import RxCocoa
 
 final class CharacterSelectViewController: BaseViewController {
     private let viewModel = CharacterSelectViewModel()
+    private let disposeBag = DisposeBag()
+    
     private lazy var characterCollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: createCollectionViewLayout()
     )
-    private let disposeBag = DisposeBag()
     
     override func configureHierarchy() {
         view.addSubview(characterCollectionView)

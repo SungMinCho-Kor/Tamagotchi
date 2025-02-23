@@ -31,7 +31,6 @@ struct TamagotchiCharacter: Equatable, Codable {
 }
 
 struct TamagotchiCharacters {
-    // 30개
     let list: [TamagotchiCharacter] = [
         TamagotchiCharacter(
             name: "따끔따끔 다마고치",

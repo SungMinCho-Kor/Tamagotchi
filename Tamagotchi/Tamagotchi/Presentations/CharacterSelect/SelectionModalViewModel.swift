@@ -30,10 +30,6 @@ final class SelectionModalViewModel: ViewModel {
         print(#function, self)
     }
     
-    init() {
-        self.character = UserDefaultsManager.shared.character.character
-    }
-    
     deinit {
         print(#function, self)
     }

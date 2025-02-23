@@ -15,8 +15,10 @@ struct CharacterInformation: Codable {
     var food: Int
     var imageName: String {
         if let number = character.number {
-            if level < 9 {
-                return "\(number)-\(level + 1)"
+            if level <= 1 {
+                return "\(number)-1"
+            } else if level < 9 {
+                return "\(number)-\(level)"
             } else {
                 return "\(number)-9"
             }

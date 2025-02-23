@@ -10,7 +10,6 @@ import SnapKit
 
 final class FeedingView: BaseView {
     private let textFieldLineView = UIView()
-    
     let amountTextField = UITextField()
     let feedButton = UIButton()
     

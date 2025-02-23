@@ -8,16 +8,6 @@
 import UIKit
 
 class BaseViewController: UIViewController, ViewConfiguration {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        serviceSetting()
-        configureHierarchy()
-        configureLayout()
-        configureViews()
-        configureNavigation()
-        bind()
-    }
-    
     init() {
         super.init(nibName: nil, bundle: nil)
         print(#function, self)
@@ -30,6 +20,16 @@ class BaseViewController: UIViewController, ViewConfiguration {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        serviceSetting()
+        configureHierarchy()
+        configureLayout()
+        configureViews()
+        configureNavigation()
+        bind()
     }
     
     func configureHierarchy() { }

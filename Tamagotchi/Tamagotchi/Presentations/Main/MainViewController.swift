@@ -13,6 +13,7 @@ import RxCocoa
 final class MainViewController: BaseViewController {
     private let viewModel = MainViewModel()
     private let disposeBag = DisposeBag()
+    private let refreshCharacter = PublishRelay<Void>()
     
     private let bubbleView = BubbleView()
     private let characterView = CharacterView()
@@ -20,7 +21,6 @@ final class MainViewController: BaseViewController {
     private let waterFeedingView = FeedingView(feedType: .water)
     private let foodFeedingView = FeedingView(feedType: .food)
     
-    private let refreshCharacter = PublishRelay<Void>()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
